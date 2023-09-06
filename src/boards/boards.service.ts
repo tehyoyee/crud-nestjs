@@ -1,46 +1,56 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Board, BoardStatus } from './boards.model';
-import { v1 as uuid } from 'uuid';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BoardStatus } from './board-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { BoardRepository } from './board.repository';
+import { Board } from './board.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BoardsService {
-	private boards: Board[] = [];
+	constructor(private boardRepository: BoardRepository) {}
 
-	getAllBoards(): Board[] {
-		return this.boards;
-	}
 
-	createBoard(createBoradDto: CreateBoardDto) {
-		const { title, description } = createBoradDto;
+    getBoardById(id: number): Promise<Board> {
+        return this.boardRepository.getBoardById(id);
+    }
+// 	getAllBoards(): Board[] {
+// 		return this.boards;
+// 	}
 
-		const board: Board = {
-			id: uuid(),
-			title,
-			description,
-			status: BoardStatus.PUBLIC,
-		}
+	createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
+		return this.boardRepository.createBoard(createBoardDto);
+	}	
+// 	createBoard(createBoradDto: CreateBoardDto) {
+// 		const { title, description } = createBoradDto;
 
-		this.boards.push(board);
-		return board;
-	}
+// 		const board: Board = {
+// 			id: uuid(),
+// 			title,
+// 			description,
+// 			status: BoardStatus.PUBLIC,
+// 		}
 
-	getBoardById(id: string): Board {
-		const found = this.boards.find((board) => board.id === id);
-		if (!found) {	// 없는 게시물 찾을 때 에러
-			throw new NotFoundException(`Can't find Board with id ${id}`);
-		}
-		return found;
-	}
+// 		this.boards.push(board);
+// 		return board;
+// 	}
 
-	deleteBoard(id: string): void {
-		const found = this.getBoardById(id);
-		this.boards = this.boards.filter((board) => board.id !== id);  
-	}
+// 	getBoardById(id: string): Board {
+// 		const found = this.boards.find((board) => board.id === id);
+// 		if (!found) {	// 없는 게시물 찾을 때 에러
+// 			throw new NotFoundException(`Can't find Board with id ${id}`);
+// 		}
+// 		return found;
+// 	}
 
-	updateBoardStatus(id: string, status: BoardStatus): Board {
-		const board = this.getBoardById(id);
-		board.status = status;
-		return board;
-	}
+// 	deleteBoard(id: string): void {
+// 		const found = this.getBoardById(id);
+// 		this.boards = this.boards.filter((board) => board.id !== id);  
+// 	}
+
+// 	updateBoardStatus(id: string, status: BoardStatus): Board {
+// 		const board = this.getBoardById(id);
+// 		board.status = status;
+// 		return board;
+// 	}
 }
