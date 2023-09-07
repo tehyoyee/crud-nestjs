@@ -2,6 +2,32 @@ import { Module } from '@nestjs/common';
 import { BoardsModule } from './boards/boards.module';
 import { Board } from './boards/board.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeORMConfig } from './configs/typeorm.config';
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot(typeORMConfig),
+    BoardsModule
+  ],
+})
+export class AppModule {}
+
+// @Module({
+//   imports: [
+//     TypeOrmModule.forRoot({
+//       type: "postgres",
+//       host: "localhost",
+//       port: 5432,
+//       username: "postgres",
+//       password: "1234",
+//       database: "boardproject",
+//       entities: [Board],
+//       synchronize: true
+//   }),
+//     BoardsModule,
+//   ],
+// })
+// export class AppModule {}
 
 // const dbConfig = config.get('db');
 
@@ -21,19 +47,3 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 //   ],
 // })
 // export class AppModule {}
-@Module({
-    imports: [
-      TypeOrmModule.forRoot({
-        type: "postgres",
-        host: "localhost",
-        port: 5432,
-        username: "postgres",
-        password: "1234",
-        database: "borad-app",
-        entities: [Board],
-        synchronize: true
-    }),
-      BoardsModule,
-    ],
-})
-export class AppModule {}
